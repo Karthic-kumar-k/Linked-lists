@@ -12,7 +12,6 @@ import Src.Services.Authentication.Route
 import Src.Services.Authentication.Types
 
 -- Define your server
--- handlers :: ServerT API AppMonad
 handlers :: Server API
 handlers = helloHandler
     :<|> helloHandler

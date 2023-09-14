@@ -6,7 +6,8 @@
 module Src.Core where
 
 import Prelude
-import Control.Monad.State
+-- import Control.Monad.State
+import Control.Monad.Reader
 import Database.Persist
 import Database.Persist.Sql
 import Database.Persist.Postgresql
@@ -14,8 +15,8 @@ import Database.PostgreSQL.Simple
 import Servant
 import qualified Network.Wai as Wai
 
-newtype AppState = AppState{ appDbPool :: ConnectionPool}
+newtype AppConfig = AppConfig{ appDbPool :: ConnectionPool}
 
-type AppMonad a = StateT AppState IO a
+type AppMonad a = ReaderT AppConfig IO a
 
-newtype AppHandler a = AppHandler { runAppHandler :: AppState -> Handler a }
+newtype AppHandler a = AppHandler { runAppHandler :: AppConfig -> Handler a }

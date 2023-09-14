@@ -1,0 +1,63 @@
+cabal-version:      2.4
+name:               linked-list
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis:
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- The license under which the package is released.
+-- license:
+author:             karthic1402
+maintainer:         karthickumar1402@gmail.com
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+executable linked-list
+    main-is:          Main.hs
+
+    -- Modules included in this executable, other than Main.
+    other-modules:
+        Src.Core
+
+        Src.Models.User
+
+        Src.Middlewares.DatabaseFunctions
+        Src.Services.Authentication.Route
+        Src.Services.Authentication.Logic
+        Src.Services.Authentication.Types
+
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:
+        base ^>=4.16.4.0,
+        aeson,
+        text,
+        bytestring,
+        utf8-string,
+        transformers,
+        mtl,
+        http-types,
+        servant,
+        servant-server,
+        warp,
+        wai-logger,
+        wai,
+        wai-extra,
+        http-api-data,
+        persistent,
+        persistent-postgresql,
+        postgresql-simple,
+        monad-logger
+
+    hs-source-dirs:   app
+    default-language: Haskell2010

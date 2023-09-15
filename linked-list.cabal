@@ -27,6 +27,7 @@ executable linked-list
     -- Modules included in this executable, other than Main.
     other-modules:
         Src.Core
+        Src.Environment
 
         Src.Models.User
 

@@ -15,8 +15,8 @@ import GHC.Generics
 import Data.Text
 
 data LoginRequest = LoginRequest{
-  username :: Maybe Text,
-  phoneNumber :: Maybe Text,
+  username :: Text,
+  mailId :: Text,
   password :: Text
 }
   deriving stock (Show, Eq, Generic)
@@ -24,7 +24,8 @@ data LoginRequest = LoginRequest{
 
 data LoginResponse = LoginResponse{
   accessToken :: Text,
-  refreshToken :: Text
+  refreshToken :: Text,
+  emailId :: Text
 }
   deriving stock (Show,Eq,Generic)
   deriving anyclass (FromJSON, ToJSON, FromForm, ToForm)

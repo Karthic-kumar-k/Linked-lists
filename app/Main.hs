@@ -20,6 +20,8 @@ import Database.PostgreSQL.Simple
 import Control.Monad.Logger (runStdoutLoggingT)
 import Control.Monad.State
 import Control.Monad.Reader
+import Control.Monad.Except
+
 
 import Data.ByteString.Builder (byteString)
 import Control.Monad.IO.Class (liftIO)
@@ -31,6 +33,7 @@ import Network.Wai.Handler.Warp (run)
 import Network.Wai.Logger (withStdoutLogger, ApacheLogger)
 
 import Src.Core
+import Src.Environment
 import Src.Middlewares.DatabaseFunctions
 import Src.Services.Authentication.Route
 import Src.Services.Authentication.Logic
@@ -39,7 +42,8 @@ import Src.Models.User
 -- Initialize the application state with a database connection pool.
 initializeAppConfig :: IO AppConfig
 initializeAppConfig = do
-  pool <- makePool "host=localhost port=5432 user=postgres password=pass dbname=test"
+  postgresConfigs <- getPostgresConfig
+  pool <- maybe (error "Can't find postgreSQL configs") makePool (pgConfigToString <$> postgresConfigs) --"host=localhost port=5432 user=postgres password=pass dbname=test"
   return $ AppConfig pool
 
 -- Create a connection pool for database connections
@@ -51,20 +55,14 @@ runDbMigrations = do
   appConfig <- ask
   runDb appConfig (runMigration migrateAll)
 
-app :: Application
-app = logStdoutDev $ serve api handlers
+app :: AppConfig -> Application
+app = logStdoutDev . serve api . handlers
 
 main :: IO()
 main = do
   appConfig <- initializeAppConfig
-  _ <- runReaderT runDbMigrations appConfig
-
-  let newUser = User "deepa" "deepakumar@gmail.com"
-  userIdEither <- runReaderT (insertUser newUser) appConfig
-  case userIdEither of
-    Left err -> putStrLn $ unpack err
-    Right userId -> putStrLn $ "User inserted with ID: " ++ show userId
+  _ <- runExceptT $ runReaderT runDbMigrations appConfig
 
   withStdoutLogger $ \logger -> do
     let settings = setPort 8081 $ setLogger logger defaultSettings
-    runSettings settings app
+    runSettings settings (app appConfig)

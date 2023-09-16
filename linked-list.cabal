@@ -29,9 +29,10 @@ executable linked-list
         Src.Core
         Src.Environment
 
-        Src.Models.User
+        Src.Models
 
         Src.Middlewares.DatabaseFunctions
+        -- Src.Services.Routes
         Src.Services.Authentication.Route
         Src.Services.Authentication.Logic
         Src.Services.Authentication.Types

@@ -15,16 +15,24 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE DataKinds #-}
 
-module Src.Models.User where
+module Src.Models where
 
 import Database.Persist.TH
        (mkMigrate, mkPersist, persistLowerCase, share, sqlSettings)
 import Data.Text (Text)
+import Data.Maybe
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 User
     username Text
     email Text
-    UniqueEmail email
+    phoneNumber Text Maybe default="9999999999"
+    UniqueEmailUser email
+    deriving Show Eq
+
+Link
+    email Text
+    url Text
+    UniqueEmailLink email
     deriving Show Eq
 |]

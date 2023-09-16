@@ -37,13 +37,13 @@ import Src.Environment
 import Src.Middlewares.DatabaseFunctions
 import Src.Services.Authentication.Route
 import Src.Services.Authentication.Logic
-import Src.Models.User
+import Src.Models
 
 -- Initialize the application state with a database connection pool.
 initializeAppConfig :: IO AppConfig
 initializeAppConfig = do
   postgresConfigs <- getPostgresConfig
-  pool <- maybe (error "Can't find postgreSQL configs") makePool (pgConfigToString <$> postgresConfigs) --"host=localhost port=5432 user=postgres password=pass dbname=test"
+  pool <- maybe (error "Can't find postgreSQL configs") makePool (pgConfigToString <$> postgresConfigs)
   return $ AppConfig pool
 
 -- Create a connection pool for database connections

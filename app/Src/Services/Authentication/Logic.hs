@@ -16,7 +16,7 @@ import Src.Middlewares.DatabaseFunctions
 import Src.Services.Authentication.Route
 import Src.Services.Authentication.Types
 
-import Src.Models.User
+import Src.Models
 
 handlers :: AppConfig -> Server API
 handlers appConfig =
@@ -40,7 +40,7 @@ helloHandler = pure "Hello, Haskell!"
 
 greetHandler :: LoginRequest -> AppMonad LoginResponse
 greetHandler req = do
-  let newUser = User (username req) (mailId req)
+  let newUser = User (username req) (mailId req) (Just $ phoneNumber req)
   userIdEither <- insertUser newUser
   case userIdEither of
     Left err ->
@@ -52,10 +52,3 @@ greetHandler req = do
       , accessToken = "wjdehdv3jgkf2kebfkjghreIWB2298v"
       , refreshToken = "29823ASXDHDBbrurfibIBNadiubwOION"
       }
-  -- case username req of
-  --   Just _ ->
-  --     pure $ LoginResponse{
-  --       accessToken = "wjdehdv3jgkf2kebfkjghreIWB2298v",
-  --       refreshToken = "29823ASXDHDBbrurfibIBNadiubwOION"
-  --     }
-  --   Nothing -> throwError $ err400 { errBody = "please enter username" }

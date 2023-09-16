@@ -17,6 +17,7 @@ import Data.Text
 data LoginRequest = LoginRequest{
   username :: Text,
   mailId :: Text,
+  phoneNumber :: Text,
   password :: Text
 }
   deriving stock (Show, Eq, Generic)

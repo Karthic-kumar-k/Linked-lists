@@ -32,7 +32,11 @@ executable linked-list
         Src.Models
 
         Src.Middlewares.DatabaseFunctions
-        -- Src.Services.Routes
+        Src.Services.Handler
+        Src.Services.Routes
+        Src.Services.Links.Logic
+        Src.Services.Links.Route
+        Src.Services.Links.Types
         Src.Services.Authentication.Route
         Src.Services.Authentication.Logic
         Src.Services.Authentication.Types

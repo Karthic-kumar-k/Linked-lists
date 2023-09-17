@@ -36,7 +36,7 @@ import Src.Core
 import Src.Environment
 import Src.Middlewares.DatabaseFunctions
 import Src.Services.Authentication.Route
-import Src.Services.Authentication.Logic
+import Src.Services.Handler
 import Src.Models
 
 -- Initialize the application state with a database connection pool.

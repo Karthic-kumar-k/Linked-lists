@@ -19,7 +19,7 @@ import Database.PostgreSQL.Simple
 import Servant
 import qualified Network.Wai as Wai
 
-import Src.Services.Authentication.Route (API(..))
+import Src.Services.Routes (API(..))
 
 newtype AppConfig = AppConfig {appDbPool :: ConnectionPool }
 

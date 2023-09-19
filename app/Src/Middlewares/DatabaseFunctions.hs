@@ -19,19 +19,34 @@ runDb :: AppConfig -> SqlPersistT IO a -> AppMonad a
 runDb appConfig query =
   liftIO $ runSqlPool query (appDbPool appConfig)
 
+-- insertUser :: User -> AppMonad (Either Text (Key User))
+-- insertUser user = do
+--   appConfig <- ask
+--   runDb appConfig $ do
+--     maybeExistingUser <- getBy (UniqueEmailUser (userEmail user))
+--     case maybeExistingUser of
+--           Just obj  -> return $ Left $ (("User with this email already exists. " :: Text) <> ( pack $ show (entityVal obj)))
+--           Nothing -> Right <$> insert user
+
 insertUser :: User -> AppMonad (Either Text (Key User))
 insertUser user = do
   appConfig <- ask
   runDb appConfig $ do
-    maybeExistingUser <- getBy (UniqueEmailUser (userEmail user))
-    case maybeExistingUser of
-          Just obj  -> return $ Left $ (("User with this email already exists. " :: Text) <> ( pack $ show (entityVal obj)))
-          Nothing -> Right <$> insert user
+    maybeUser <- insertUnique user
+    case maybeUser of
+          Just obj  -> pure $ Right obj
+          Nothing -> return $ Left ("Email/UserName already exists." :: Text)
 
-getUser :: Text -> AppMonad (Maybe (Entity User))
-getUser email = do
+getUserFromMail :: Text -> AppMonad (Maybe (Entity User))
+getUserFromMail email = do
   appConfig <- ask
   runDb appConfig $ getBy (UniqueEmailUser email)
+
+getUserFromUserName :: Text -> AppMonad (Maybe User)
+getUserFromUserName userName = do
+  appConfig <- ask
+  maybeEntity <- runDb appConfig $ getBy (UniqueUsernameUser userName)
+  pure $ entityVal <$> maybeEntity
 
 getLink :: Text -> AppMonad (Maybe Link)
 getLink email = do
@@ -64,3 +79,4 @@ updateLinkByEmail email urls = do
       (Left "New Value is not updated. Persisting old value")
       (Right linkObj)
       ((linkUrl linkObj) == urls)
+

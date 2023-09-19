@@ -6,49 +6,30 @@ import Src.Core
 
 import Servant
 import Data.Text (Text)
--- import Control.Monad.Except (throwError)
 import Control.Monad.Reader
 import Control.Monad.Except
 import qualified Data.Text.Lazy as DTL
 import qualified Data.Text.Lazy.Encoding as DTLE
 
-import Src.Middlewares.DatabaseFunctions
-import Src.Services.Authentication.Route
-import Src.Services.Authentication.Types
+import qualified Src.Middlewares.DatabaseFunctions as DF
+import qualified Src.Services.Authentication.Types as AT
 
-import Src.Models
-
-handlers :: AppConfig -> Server API
-handlers appConfig =
-  hoistServer api f handlers'
-  where
-    f :: ReaderT AppConfig (ExceptT ServerError IO) a -> Handler a
-    f r = do
-      eResult <- liftIO $ runExceptT $ runReaderT r appConfig
-      case eResult of
-        Left err  -> throwError err
-        Right res -> pure res
-
--- Define your server
-handlers' :: AppServer
-handlers' = helloHandler
-    :<|> helloHandler
-    :<|> greetHandler
+import qualified Src.Models as Models
 
 helloHandler :: AppMonad Text
 helloHandler = pure "Hello, Haskell!"
 
-greetHandler :: LoginRequest -> AppMonad LoginResponse
+greetHandler :: AT.LoginRequest -> AppMonad AT.LoginResponse
 greetHandler req = do
-  let newUser = User (username req) (mailId req) (Just $ phoneNumber req)
-  userIdEither <- insertUser newUser
+  let newUser = Models.User (AT.username req) (AT.mailId req) (Just $ AT.phoneNumber req)
+  userIdEither <- DF.insertUser newUser
   case userIdEither of
     Left err ->
       let errorMessage = DTLE.encodeUtf8 $ DTL.fromStrict err
       in throwError $ err400 { errBody = errorMessage}
     Right uId -> pure $
-      LoginResponse
-      { emailId = mailId req
-      , accessToken = "wjdehdv3jgkf2kebfkjghreIWB2298v"
-      , refreshToken = "29823ASXDHDBbrurfibIBNadiubwOION"
+      AT.LoginResponse
+      { AT.emailId = AT.mailId req
+      , AT.accessToken = "wjdehdv3jgkf2kebfkjghreIWB2298v"
+      , AT.refreshToken = "29823ASXDHDBbrurfibIBNadiubwOION"
       }

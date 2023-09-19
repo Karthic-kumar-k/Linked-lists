@@ -35,8 +35,8 @@ import Network.Wai.Logger (withStdoutLogger, ApacheLogger)
 import Src.Core
 import Src.Environment
 import Src.Middlewares.DatabaseFunctions
-import Src.Services.Authentication.Route
 import Src.Services.Handler
+import Src.Services.Routes
 import Src.Models
 
 -- Initialize the application state with a database connection pool.

@@ -16,12 +16,7 @@ import qualified Data.Text.Lazy.Encoding as DTLE
 
 import qualified Src.Middlewares.DatabaseFunctions as DF
 import qualified Src.Services.Links.Types as LT
-
 import Src.Models as Models
-
-linkHandlers :: AppServer
-linkHandlers = putLinks
-    :<|> listLinks
 
 listLinks :: LT.ListLinkRequest -> AppMonad LT.ListLinkResponse
 listLinks req = do
@@ -53,3 +48,16 @@ updateLinks req link = do
   case resEither of
     Left err -> pure $ LT.PutLinkResponse err (LT.postEmailId req)
     Right _ -> pure $ LT.PutLinkResponse "Success" (LT.postEmailId req)
+
+listlinkFromUserName :: Text -> AppMonad LT.ListLinkResponse
+listlinkFromUserName userName = do
+  userM <- DF.getUserFromUserName userName
+  case userM of
+    Nothing -> throwError $ err400
+    Just user -> do
+      linkM <-  DF.getLink $ userEmail user
+      case linkM of
+        Nothing -> pure $ LT.ListLinkResponse Nothing "No Links found"
+        Just link ->
+          let urls = Aeson.decode . DTLE.encodeUtf8 . DTL.fromStrict $ linkUrl link :: Maybe [Text]
+          in pure $ LT.ListLinkResponse urls "Success"

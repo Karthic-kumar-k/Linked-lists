@@ -37,10 +37,11 @@ insertUser user = do
           Just obj  -> pure $ Right obj
           Nothing -> return $ Left ("Email/UserName already exists." :: Text)
 
-getUserFromMail :: Text -> AppMonad (Maybe (Entity User))
+getUserFromMail :: Text -> AppMonad (Maybe User)
 getUserFromMail email = do
   appConfig <- ask
-  runDb appConfig $ getBy (UniqueEmailUser email)
+  maybeEntity <- runDb appConfig $ getBy (UniqueEmailUser email)
+  pure $ entityVal <$> maybeEntity
 
 getUserFromUserName :: Text -> AppMonad (Maybe User)
 getUserFromUserName userName = do

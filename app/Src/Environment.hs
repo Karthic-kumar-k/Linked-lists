@@ -4,9 +4,10 @@
 
 module Src.Environment where
 
-import Prelude
-
+import Control.Monad.IO.Class (liftIO)
 import System.Environment.Blank
+
+import Src.Core
 
 data PostgreSQLConfig = PostgreSQLConfig
   { pg_host :: String
@@ -36,3 +37,6 @@ getPostgresConfig = do
   --   <*> getEnv "POSTGRES_USER"
   --   <*> getEnv "POSTGRES_PASS"
   --   <*> getEnv "POSTGRES_DB"
+
+getAccessTokenSecret :: AppMonad (Maybe String)
+getAccessTokenSecret = liftIO $ getEnv "ACCESS_TOKEN_SECRET"

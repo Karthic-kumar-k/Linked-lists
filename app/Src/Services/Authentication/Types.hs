@@ -25,7 +25,7 @@ data LoginRequest = LoginRequest{
 
 data LoginResponse = LoginResponse{
   accessToken :: Text,
-  refreshToken :: Text,
+  refreshToken :: Maybe Text,
   emailId :: Text
 }
   deriving stock (Show,Eq,Generic)

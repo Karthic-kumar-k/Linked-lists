@@ -27,6 +27,7 @@ User
     username Text
     email Text
     phoneNumber Text Maybe default="9999999999"
+    password Text
     UniqueUsernameUser username
     UniqueEmailUser email
     deriving Show Eq

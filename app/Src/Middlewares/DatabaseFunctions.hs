@@ -3,10 +3,12 @@
 module Src.Middlewares.DatabaseFunctions where
 
 import Data.Bool (bool)
+import qualified Data.ByteString as BS
 import Data.Text
 import Control.Monad.State
 import Control.Monad.Reader
 
+import Database.Redis as Redis
 import Database.Persist
 import Database.Persist.Sql
 import Database.Persist.Postgresql
@@ -81,3 +83,17 @@ updateLinkByEmail email urls = do
       (Right linkObj)
       ((linkUrl linkObj) == urls)
 
+insertOTPInRedis :: BS.ByteString -> BS.ByteString -> AppMonad (Either Redis.Reply Redis.Status)
+insertOTPInRedis username otp = do
+  configs <- ask
+  liftIO . Redis.runRedis (redisConnection configs) $ Redis.set username otp
+
+getOTPFromRedis :: BS.ByteString -> AppMonad (Either Redis.Reply (Maybe BS.ByteString))
+getOTPFromRedis username = do
+  configs <- ask
+  liftIO . Redis.runRedis (redisConnection configs) $ Redis.get username
+
+deleteOTPFromRedis :: BS.ByteString -> AppMonad (Either Redis.Reply Integer)
+deleteOTPFromRedis username = do
+  configs <- ask
+  liftIO . Redis.runRedis (redisConnection configs) $ Redis.del [username]

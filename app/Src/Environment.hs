@@ -5,6 +5,8 @@
 module Src.Environment where
 
 import Control.Monad.IO.Class (liftIO)
+import qualified Data.ByteString.Char8 as Char8
+import qualified Database.Redis as Redis
 import System.Environment.Blank
 
 import Src.Core
@@ -43,3 +45,21 @@ getAccessTokenSecret = liftIO $ getEnv "ACCESS_TOKEN_SECRET"
 
 getMailIdPassword :: AppMonad (Maybe String)
 getMailIdPassword = liftIO $ getEnv "MAIL_ID_PASSWORD"
+
+getRedisConfigs :: IO (Maybe Redis.ConnectInfo)
+getRedisConfigs = do
+  a <- getEnv "REDIS_HOST"
+  b <- getEnv "REDIS_PASS"
+
+  return $ case (a, b) of
+    (Just h, Just pa) ->
+      Just $ Redis.defaultConnectInfo
+        { Redis.connectHost = h
+        , Redis.connectPort = Redis.PortNumber 6379
+        , Redis.connectAuth = Char8.pack <$> b
+        }
+    _ ->
+      Just Redis.defaultConnectInfo
+        { Redis.connectHost = "127.0.0.1"
+        , Redis.connectPort = Redis.PortNumber 6379
+        }

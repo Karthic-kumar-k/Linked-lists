@@ -14,6 +14,7 @@ import Control.Monad.Except
 import qualified Data.Text.Lazy as DTL
 import qualified Data.Text.Lazy.Encoding as DTLE
 
+import qualified Src.Middlewares.Auth as Auth
 import qualified Src.Middlewares.DatabaseFunctions as DF
 import qualified Src.Services.Links.Types as LT
 import Src.Models as Models
@@ -27,8 +28,9 @@ listLinks req = do
       let urls = Aeson.decode . DTLE.encodeUtf8 . DTL.fromStrict $ linkUrl link :: Maybe [Text]
       in pure $ LT.ListLinkResponse urls "Success"
 
-putLinks :: LT.PutLinkRequest -> AppMonad LT.PutLinkResponse
-putLinks req = do
+putLinks :: Maybe Text -> LT.PutLinkRequest -> AppMonad LT.PutLinkResponse
+putLinks authM req = do
+  maybe (throwError $ err403 {errBody = "Invalid Authorisation header"}) Auth.verifyAuth authM
   listM <- DF.getLink $ LT.postEmailId req
   maybe (insertLinkRequest req) (\link -> updateLinks req link) listM
 

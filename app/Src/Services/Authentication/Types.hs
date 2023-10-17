@@ -31,8 +31,7 @@ data SignInResponse = SignInResponse
   deriving anyclass (ToJSON)
 
 data LoginRequest = LoginRequest
-  { username :: Text
-  , mailId :: Text
+  { mailId :: Text
   , password :: Text
   }
   deriving stock (Show, Eq, Generic)

@@ -45,7 +45,6 @@ instance ToJSON ListLinkResponse where
 data PutLinkRequest = PutLinkRequest
   { postUrls :: [Text]
   , postEmailId :: Text
-  , postAccessToken :: Text
   }
   deriving stock (Show,Eq,Generic)
 
@@ -53,14 +52,12 @@ instance FromJSON PutLinkRequest where
   parseJSON = withObject "PutLinkRequest" $ \obj -> do
     postUrls <- obj .: "urls"
     postEmailId <- obj .: "emailId"
-    postAccessToken <- obj .: "accessToken"
-    return PutLinkRequest { postUrls = postUrls, postEmailId = postEmailId, postAccessToken = postAccessToken }
+    return PutLinkRequest { postUrls = postUrls, postEmailId = postEmailId }
 
 instance ToJSON PutLinkRequest where
-  toJSON (PutLinkRequest postUrls postEmailId postAccessToken) =
+  toJSON (PutLinkRequest postUrls postEmailId) =
     object [ "urls" .= postUrls
            , "emailId" .= postEmailId
-           , "accessToken" .= postAccessToken
            ]
 
 data PutLinkResponse = PutLinkResponse

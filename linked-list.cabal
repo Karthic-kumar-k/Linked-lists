@@ -33,6 +33,7 @@ executable linked-list
 
         Src.Middlewares.DatabaseFunctions
         Src.Middlewares.DateTime
+        Src.Middlewares.MailService
         Src.Services.Handler
         Src.Services.Routes
         Src.Services.Links.Logic
@@ -64,7 +65,10 @@ executable linked-list
         postgresql-simple,
         monad-logger,
         jwt >= 0.11.0,
-        time >= 1.11.1.1
+        time >= 1.11.1.1,
+        smtp-mail >= 0.3.0.0,
+        mime-mail >= 0.5.1,
+        random
 
     hs-source-dirs:   app
     default-language: Haskell2010

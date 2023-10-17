@@ -40,3 +40,6 @@ getPostgresConfig = do
 
 getAccessTokenSecret :: AppMonad (Maybe String)
 getAccessTokenSecret = liftIO $ getEnv "ACCESS_TOKEN_SECRET"
+
+getMailIdPassword :: AppMonad (Maybe String)
+getMailIdPassword = liftIO $ getEnv "MAIL_ID_PASSWORD"

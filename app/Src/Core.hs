@@ -11,6 +11,7 @@ import Prelude
 import Control.Monad.Reader
 import Control.Monad.Except
 
+import qualified Database.Redis as Redis
 import Database.Persist
 import Database.Persist.Sql
 import Database.Persist.Postgresql
@@ -21,7 +22,10 @@ import qualified Network.Wai as Wai
 
 import Src.Services.Routes (API(..))
 
-newtype AppConfig = AppConfig {appDbPool :: ConnectionPool }
+data AppConfig = AppConfig
+  { appDbPool :: ConnectionPool
+  , redisConnection :: Redis.Connection
+  }
 
 type AppMonad = ReaderT AppConfig (ExceptT ServerError IO)
 

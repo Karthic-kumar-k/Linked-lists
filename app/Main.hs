@@ -12,6 +12,7 @@ import           Network.Wai.Handler.Warp
 import           Network.Wai.Middleware.RequestLogger
 import           Servant
 
+import qualified Database.Redis as Redis
 import Database.Persist
 import Database.Persist.Sql
 import Database.Persist.Postgresql
@@ -43,8 +44,10 @@ import Src.Models
 initializeAppConfig :: IO AppConfig
 initializeAppConfig = do
   postgresConfigs <- getPostgresConfig
-  pool <- maybe (error "Can't find postgreSQL configs") makePool (pgConfigToString <$> postgresConfigs)
-  return $ AppConfig pool
+  redisConfigs <- getRedisConfigs
+  postgresPool <- maybe (error "Can't find postgreSQL configs") makePool (pgConfigToString <$> postgresConfigs)
+  redisPool <- maybe (error "Can't find redis configs") Redis.checkedConnect redisConfigs
+  return $ AppConfig postgresPool redisPool
 
 -- Create a connection pool for database connections
 makePool :: String -> IO ConnectionPool

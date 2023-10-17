@@ -25,4 +25,4 @@ handlers appConfig =
 
 handlers' :: AppServer
 handlers' =
-  AL.helloHandler :<|> AL.greetHandler :<|> LL.putLinks :<|> LL.listLinks :<|> LL.listlinkFromUserName
+  AL.signinHandler :<|> AL.loginHandler :<|> AL.verifyOTP :<|> LL.putLinks :<|> LL.listLinks :<|> LL.listlinkFromUserName
